@@ -1,5 +1,6 @@
 import discord
 import logging
+from pathlib import Path
 
 logger = logging.getLogger('discord')
 logger.setLevel(logging.DEBUG)
@@ -7,8 +8,16 @@ handler = logging.FileHandler(filename='discord.log', encoding='utf-8', mode='w'
 handler.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(message)s'))
 logger.addHandler(handler)
 
-client = discord.Client()
+intents = discord.Intents.default()
+intents.typing = False
+intents.presences = False
+intents.members = True
+intents.guilds = True
+client = discord.Client(intents=intents)
 
+template_path = Path('./templates')
+with (template_path / 'welcome_message.txt').open(mode='r') as f:
+    welcome_template = f.read()
 
 @client.event
 async def on_ready():
@@ -16,7 +25,7 @@ async def on_ready():
 
 
 @client.event
-async def on_message(message):
+async def on_message(message: discord.Message):
     if message.author == client.user:
         return
     if message.channel.name != 'bot-test':
@@ -24,7 +33,16 @@ async def on_message(message):
     logger.info(f'MSG_CONTENT: {message.content}')
     logger.info(f'MSG: {message}')
     if message.content.startswith('$hello'):
-        await message.channel.send('Hello!')
+        await message.channel.send('Hello! :wave:')
 
+
+@client.event
+async def on_member_join(member: discord.Member):
+    logger.info(f'A new member joined, info: {member}')
+    guild = member.guild
+    if str(member) == 'testing1#9745':
+        await member.send(welcome_template)
+    channel = guild.get_channel(channel_id=944447918524481546)
+    await channel.send(f'A new member joined, info: {member}')
 
 client.run('<TOKEN>')
