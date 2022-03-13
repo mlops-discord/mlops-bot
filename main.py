@@ -1,6 +1,8 @@
-import discord
 import logging
+import os
 from pathlib import Path
+
+import discord
 
 logger = logging.getLogger('discord')
 logger.setLevel(logging.DEBUG)
@@ -45,4 +47,4 @@ async def on_member_join(member: discord.Member):
     channel = guild.get_channel(channel_id=944447918524481546)
     await channel.send(f'A new member joined, info: {member}')
 
-client.run('<TOKEN>')
+client.run(os.environ.get('BOT_TOKEN'))
