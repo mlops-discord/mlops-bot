@@ -1,1 +1,2 @@
 discord.py==1.7.3
+jinja2==3.0.3
