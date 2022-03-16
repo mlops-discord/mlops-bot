@@ -76,5 +76,6 @@ async def on_member_join(member: discord.Member):
     channel = guild.get_channel(channel_id=944447918524481546)
     await channel.send(f'A new member joined, info: {member}')
     await channel.send(get_welcome_message())
+    await member.send(get_welcome_message())
 
 client.run(os.environ.get('BOT_TOKEN'))
